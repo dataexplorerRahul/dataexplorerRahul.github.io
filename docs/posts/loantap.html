@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Agent for Psychologists">
+<meta name="description" content="Credit Risk Prediction">
 
-<title>PsyLens – Rahul Menon</title>
+<title>LoanTap – Rahul Menon</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -106,12 +106,13 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#resources" id="toc-resources" class="nav-link active" data-scroll-target="#resources">Resources</a></li>
-  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
-  <li><a href="#agent" id="toc-agent" class="nav-link" data-scroll-target="#agent">Agent</a>
-  <ul class="collapse">
-  <li><a href="#sec-db_tool" id="toc-sec-db_tool" class="nav-link" data-scroll-target="#sec-db_tool">Database Tool</a></li>
-  <li><a href="#sec-rag_tool" id="toc-sec-rag_tool" class="nav-link" data-scroll-target="#sec-rag_tool">RAG Tool</a></li>
-  </ul></li>
+  <li><a href="#problem-statement" id="toc-problem-statement" class="nav-link" data-scroll-target="#problem-statement">1. Problem Statement</a></li>
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection">2. Data collection</a></li>
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">3. EDA</a></li>
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">4. Data Preprocessing</a></li>
+  <li><a href="#data-modeling" id="toc-data-modeling" class="nav-link" data-scroll-target="#data-modeling">5. Data Modeling</a></li>
+  <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation">6. Model Evaluation</a></li>
+  <li><a href="#model-deployment" id="toc-model-deployment" class="nav-link" data-scroll-target="#model-deployment">7. Model deployment</a></li>
   </ul>
 </nav>
     </div>
@@ -120,16 +121,16 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">PsyLens</h1>
+<h1 class="title">LoanTap</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">GenAI</div>
-    <div class="quarto-category">RAG</div>
+    <div class="quarto-category">Machine learning</div>
+    <div class="quarto-category">Classification</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Agent for Psychologists
+    Credit Risk Prediction
   </div>
 </div>
 
@@ -148,219 +149,250 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
-<p>You can find the code for this project in this <a href="https://github.com/dataexplorerRahul/Agentic_RAG">repo</a>.</p>
+<p>You can find the code for this project in this <a href="https://github.com/dataexplorerRahul/LoanTap">repo</a>.</p>
+<p>For this project, I followed the below Data-Science Lifecycle. <img src="../images/loantap/lifecycle.png" class="img-fluid"></p>
 </section>
-<section id="background" class="level2">
-<h2 class="anchored" data-anchor-id="background">Background</h2>
-<p>This project is part of my work at TerrablueXT and the objective is to enable Psychologists query/interact with their client’s CRF (Case-Report-Form) response &amp; Mental-health report (PDF).</p>
-<p>All the details about various approaches &amp; steps to execute the project are explain in the following sections.</p>
+<section id="problem-statement" class="level2">
+<h2 class="anchored" data-anchor-id="problem-statement">1. Problem Statement</h2>
+<p>Banking/Lending institutions approve or reject loans of applicants based on their credit profile details. The objective of this project is to develop a classical Machine-learning model, to help the institutions approve or reject loans based on the applicant details. The impact would be reduction of manual effort in decision-making, maybe needing only manual intervention at the last stages of loan approval.</p>
+<p>Since, the decision is either loan approved or rejected, which is a binary feature thus making this a <strong>Binary classification task</strong>.</p>
 </section>
-<section id="agent" class="level2">
-<h2 class="anchored" data-anchor-id="agent">Agent</h2>
-<p><img src="../images/psylens/agent_workflow.png" class="img-fluid"></p>
-<p>The above image demonstrates the Agent workflow that was implemented for this usecase. It is a mixture of both Routing worflow &amp; Agent (LangChain’s <a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents">blog</a>) The purpose of each node is as follows:</p>
+<section id="data-collection" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection">2. Data collection</h2>
+<p>I used this <a href="https://www.kaggle.com/datasets/ranitsarkar01/loantap-logisticregression/data">Kaggle dataset</a> for this project, hence data collection wasn’t needed.</p>
+<p>Before, proceeding to the next phase, its considered a good practice to: * Choose an appropriate Success Metric * Split the data into Training &amp; Test set and use the Test-set only in model-evaluation phase.</p>
+<p>Upon initial exploration of the dataset, it turns out that the data is imbalanced (Fully Paid:Charged Off :: 4:1). Hence, I chose F1-score &amp; PR-AUC as the success metrics over Accuracy (not optimal), as they focus more on the Positive (minority) class.</p>
+<p>I made a stratified split to original data, which preserves the ratio of minority-majority classes in both the training &amp; test sets.</p>
+</section>
+<section id="eda" class="level2">
+<h2 class="anchored" data-anchor-id="eda">3. EDA</h2>
+<p>I made use of the following tools to explore the data in the <a href="https://github.com/dataexplorerRahul/LoanTap/blob/main/notebooks/Step-1%20EDA.ipynb">notebook</a>:</p>
 <ul>
-<li><p>Input guardrail: This node provides protection through OpenAI’s <a href="https://openai.github.io/openai-guardrails-python/">guardrails</a> at following levels:</p>
+<li>Basic Exploration</li>
+<li>Visualization (Univariate &amp; Bivariate)</li>
+<li>Outlier detection</li>
+<li>Correlation analysis<br>
+</li>
+<li>Hypothesis testing</li>
+</ul>
+<p>Some of the visualizations from the notebook are as below: <img src="../images/loantap/bivariate_num.png" class="img-fluid"> <img src="../images/loantap/bivariate_cat.png" class="img-fluid"> <img src="../images/loantap/correlation_heatmap.png" class="img-fluid"></p>
+<p>The compiled insights from EDA are as follows:</p>
 <ul>
-<li>Moderation: Detect harmful or policy-violating content including hate speech, harassment, self-harm, and other inappropriate content.</li>
-<li>Jailbreak: Detect jailbreak attempts by identifying various attack patterns.</li>
-<li>Off-topic prompts: Detect prompts deviating for the core task of the agent.</li>
+<li>The dataset has 27 features: 12 numerical, 13 categorical (including target-feature) &amp; 2 date related in nature.</li>
+<li>The dataset consists for missing values but no duplicates.</li>
+<li><strong>Numercical features</strong>:
+<ul>
+<li>Names: loan_amt, int_rate, installment, annual_inc, dti, open_acc, pub_rec, revol_bal, revol_util, total_acc, mort_acc, pub_rec_bankruptcies</li>
+<li>Almost all of them are right skewed with outliers present on the high extremes. Some features such as <code>dti, revol_bal, revol_util</code> have outlier values which might seem impossible in real-world</li>
+<li>Borrowers tend to apply for loan amount in round figures i.e.&nbsp;5K, 10K, 20K, 25K etc. with $10K being the most commonly borrowed amount.</li>
+<li>The proportion of defaulters is higher for higher values of <code>dti, revol_util, int_rate</code>.</li>
+<li>Applicants with any negative record are more likely to default.</li>
+<li>The following combination of features have shown high Spearman correlation: <code>loan_amnt &amp; installment</code>, <code>pub_rec_bankruptcies &amp; pub_rec</code>, <code>total_acc &amp; open_acc</code>. These correlations makes sense: installment is derived from loan_amnt, pub_rec_bankruptcies &amp; pub_rec represent similar information i.e.&nbsp;negative records while total_acc &amp; open_acc represent the number of credit-lines for each applicant.</li>
+<li>The median values for defaulters is slightly higher than non-defaulters in these features: <code>int_rate, dti, loan_amnt, revol_util, open_acc</code>. This indicates that defaulters tend to: borrow larger loans, have more open credit-lines, have higher interest rate due to high riskiness, have higher debt than income.</li>
 </ul></li>
-<li><p>unrelated_query_handler: Any user-query that trips the Guardrails it routed to this node, which returns a regret message.</p></li>
-<li><p>intent_classifier: This node detects the intent of the input query and routes it accordingly to either the greetings or planner nodes.</p></li>
-<li><p>greetings: This node handles the greeting related users messages and returns an appropriate response.</p></li>
-<li><p>planner: This is the main agent responsibel to generate/answer the user’s actual query from the database or PDF reports. It has access to 2 tools: Database-tool &amp; RAG-tool, using which it enriches the LLM context with relevant information to answer user’s query.</p></li>
-<li><p>conversation_summary: This node generates a concise summary of the running multi-turn conversation between the user &amp; agent. It is triggered when accumulated number of messages exceeds 6 (3-turns).</p></li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Note that the user here is the Psychologist</p>
-</div>
-</div>
-<section id="sec-db_tool" class="level3">
-<h3 class="anchored" data-anchor-id="sec-db_tool">Database Tool</h3>
-<p><img src="../images/psylens/db_tool_pipeline.png" class="img-fluid"> To answer user’s query related to data stored in database i.e.&nbsp;Client’s demographic, health-history, responses to GAD &amp; PHQ questionnaires. To achieve this, I took the following approach:</p>
+<li><strong>Categorical features</strong>:
 <ul>
-<li>SQL query generation: Firstly, user’s natural language query is converted to an SQL query, using an LLM API call enriched with the database schema.</li>
-<li>Query execution: The generated SQL query is then executed using LangChain’s <code>SQLDatabase</code> engine and the fetched results are returned to the Planner agent.</li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As an security measure, I created a user profile with read-only privileges of the database, to run/execute the generated SQL query. This is to prevent executing a malicious query, modifying the database in unwanted ways.</p>
-</div>
-</div>
-</section>
-<section id="sec-rag_tool" class="level3">
-<h3 class="anchored" data-anchor-id="sec-rag_tool">RAG Tool</h3>
-<p>Retrieval Augmented Generation is used to augement &amp; enrich the context of LLM to answer queries from domain-specific or personal knowledge base which the LLM hasn’t been trained on. This is a technique to ground the LLM with unseen &amp; specific data and generate responses based on that.</p>
-<p>Here, in this case the knowledge base consists of Psychologist PDF reports, each of which contain the mental-health analysis for a particular client. I am leveraging RAG to let Psychologist interact with these report to reduce the analysis effort during/before 1-on-1 meeting with the client.</p>
-<p>The PDF reports are quite structured in their format:</p>
-<ul>
-<li>Multimodal i.e.&nbsp;Text + Plots/Graphs(images) + Tabular data</li>
-<li>All the topic headings in each report are the same except the content</li>
-</ul>
-<p>Since, the reports are multimodal (as they contain text &amp; images), there are following approaches mentioned in this <a href="https://developer.nvidia.com/blog/an-easy-introduction-to-multimodal-retrieval-augmented-generation/">blog</a>:</p>
-<ul>
-<li>Embed all modalities into the same vector space</li>
-<li>Ground all modalities into one primary modality</li>
-<li>Have separate stores for different modalities</li>
-</ul>
-<p>I chose the 2nd approach, where I ground all the modalities into the text modality.</p>
-<section id="pipeline" class="level4">
-<h4 class="anchored" data-anchor-id="pipeline">Pipeline</h4>
-<p><img src="../images/psylens/rag_pipeline.png" class="img-fluid"> The RAG pipeline I used has the following steps:</p>
-<section id="document-parsing" class="level5">
-<h5 class="anchored" data-anchor-id="document-parsing">Document Parsing</h5>
-<p>This steps involves loading &amp; the parsing the content in the PDF. For this step, Docling package was used to</p>
-<ul>
-<li>Extract text content as markdown</li>
-<li>Extract table as markdown (preserves the tabular structure to some extent in text format) because ~90% of PDF is just tables.</li>
-<li>Extract plots-images as base64 encoded strings.</li>
-</ul>
-<p>I did try other PDF loaders from LangChain such as PyMuPDF, PDFPlumber &amp; PyMuPDF4LLM, but each of them had issues of their own like unable to extract tables as markdown text, adding extra columns in tables etc.</p>
-<p>Docling provide good results in the above tasks and that’s the reason for this choice.</p>
-</section>
-<section id="document-chunking" class="level5">
-<h5 class="anchored" data-anchor-id="document-chunking">Document Chunking</h5>
-<p>This is the most crucial step in a RAG pipeline. As the name suggests, we divide the entire document into chunks which are then embedded into a vector store. There are many different chunking strategies to choose from, but keeping document-structure &amp; context preservation between chunks in mind, I chose <strong>Document-structure based chunking</strong>.</p>
-<p>What this steps involves is to chunk the entire document based on the Headers (specifically Heading 2) using <code>MarkdownTextHeaderSplitter</code> from LangChain. The effect: Preserves context of each title in document by keeping all the content of that title together in a single chunk.</p>
-<p>Extra preprocessing:</p>
-<ul>
-<li>Removing Page header from the markdown text extracted during parsing step</li>
-<li>Adding metadata such as file-name, chunk-type(image or text)</li>
-</ul>
-</section>
-<section id="contextual-summary" class="level5">
-<h5 class="anchored" data-anchor-id="contextual-summary">Contextual Summary</h5>
-<p>This is an additional step in RAG pipeline suggested in Anthropic’s <a href="https://www.anthropic.com/engineering/contextual-retrieval">blog</a>, which results in better retrieval metrics. It involves generating a summary of a particular chunk w.r.t to the entire document. This summary helps locate the chunk in the document and provide necessary context about what the chunk content is about w.r.t the document. The summary is then prepended to original chunk and then embedded into the vector store</p>
-<p>Since, the plot-images need to converted to text itself, I didn’t generate a contextual summary for them.</p>
-</section>
-<section id="indexing" class="level5">
-<h5 class="anchored" data-anchor-id="indexing">Indexing</h5>
-<p>Now, to index the chunks, I experimented along these aspects:</p>
-<ul>
-<li><p>Choice of Embedding model: MTEB <a href="https://huggingface.co/spaces/mteb/leaderboard">leaderboard</a> is a good reference to compare Embedding models’ performance for different tasks. In our case, since retrieval is the main task, I tried out the following Embedding models:</p>
-<ul>
-<li><a href="https://huggingface.co/Qwen/Qwen3-Embedding-8B">qwen3-embedding-8B</a>: Its open-source and is the top-performer on the leaderboard currently. Accessed this model via Nebius’s API, due to resource constraints.</li>
-<li><a href="https://huggingface.co/Qwen/Qwen3-Embedding-4B">qwen3-embedding-4B</a>: Its open-source and provides great balance between performance &amp; memory requirement.</li>
-<li><a href="https://ai.google.dev/gemini-api/docs/embeddings">gemini-embedding-001</a>: Accessible via API and was the top-model before Qwen3 dethroned it.</li>
-<li><a href="https://blog.voyageai.com/2024/09/18/voyage-3/">voyage-3-large</a>: Suggested in Anthropic’s <a href="https://www.anthropic.com/engineering/contextual-retrieval">blog</a>. This model can be accessed via API and they offer first 200M embedding tokens for free</li>
-<li><a href="https://huggingface.co/intfloat/multilingual-e5-large-instruct">multilingual-e5-large-instruct</a>: Due to smaller size and it has decent performance on retrieval task</li>
+<li>Names: term, grade, sub, emp_title, emp_length, home_ownership, verification_status, purpose, title, initial_list_status, application_type, address, loan_status</li>
+<li>Applicants generally opt for 3-year loans than 5-year. Also, 5-year loans have higher default-rate (~50%)</li>
+<li>The default rate increases with grades A-&gt;G and sub-grades A1-&gt;G5, confirming that A-grade loans are the safest while G-grade the riskiest.</li>
+<li>The default rate is higher among lesser experienced applicants (&lt;1 year) while lesser among more experienced applicants.</li>
+<li>Applicants with rented-homes are more likely to default than the ones with mortgaged or owned homes.</li>
+<li>Debt-consolidation, Moving, Small-business are some of the riskiest categories of <strong>purpose</strong> feature in terms of default rate</li>
 </ul></li>
-<li><p>Choice of Vector-store: As the name suggests, they are used to store the embedding vectors of all the chunks. I chose Qdrant due to the following reasons:</p>
+<li><strong>Date features</strong>:
 <ul>
-<li><p>Open-source &amp; can be run locally</p></li>
-<li><p>Written in Rust which makes it fast &amp; reliable</p></li>
-<li><p>Fastest metadata filtering</p></li>
-<li><p>High throughput</p>
-<p>To create the retriever, I used LangChain’s <code>MultiVectorRetriever</code>, with <code>QdrantVectorStore</code> as vector-store to index the chunk-embedding-vectors &amp; <code>InMemoryStore</code> as doc-store to store the original document chunks</p></li>
+<li>Names: issue_d, earliest_cr_line</li>
+<li>Applicants are with shorter credit history (2005 onwards) are more likely to default compared to applicants with longer credit history (before 1990)</li>
 </ul></li>
-<li><p>Choice of Search-type: I experimented with the following search-types:</p>
+<li><strong>Hypothesis Testing</strong>:
 <ul>
-<li><strong>Semantic search</strong>: It involves retrieving documents based on similarity scores between the query-embedding &amp; vector-embeddings in the vector-store</li>
-<li><strong>Hybrid search</strong>: It combines Semantic search with Keyword-based (BM25) search, retrieving documents using RRF(Reciprocal Rank Fusion) as combination &amp; ranking strategy.</li>
+<li>Following numerical features are more discriminative towards <code>loan_status</code> &amp; hence good predictors:
+<ul>
+<li>Features with significantly higher values for <strong>Charged Off</strong> applicants: <code>loan_amnt, int_rate, installment, dti, open_acc, pub_rec</code></li>
+<li>Features with significantly higher values for <strong>Fully Paid</strong> applicants: <code>annual_inc</code></li>
+</ul></li>
+<li>The outliers of following features are good indicators of default cases: <code>loan_amnt, int_rate, annual_inc, dti, open_acc, pub_rec, revol_bal</code></li>
+<li>The following pair of features are highly correlated with each other: <code>loan_amnt &amp; installment</code>, <code>total_acc &amp; open_acc</code>, <code>pub_rec &amp; pub_rec_bankruptcies</code>.</li>
+<li>The target feature i.e.&nbsp;<code>loan_status</code> is dependent on all the categorical features</li>
 </ul></li>
 </ul>
 </section>
-<section id="evaluation" class="level5">
-<h5 class="anchored" data-anchor-id="evaluation">Evaluation</h5>
-<p>To log the performance of the retrieval, I created a evaluation set consisting of queries &amp; golden-chunk-ids(ground-truth) key-value pairs against which the pipeline will be evaluated. The metric I chose in this case was <code>Recall@k</code>, where k={3, 5, 7}.</p>
-<p>Following are the results for the experiments conducted:</p>
+<section id="data-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing">4. Data Preprocessing</h2>
+<p>This phase was executed with the objective of retaining as much information as possible from the original data. It consisted of the below steps:</p>
+<ul>
+<li>Data cleaning
+<ul>
+<li>This step involved stripping whitespaces from categorical features, converting date features to date-time format, extracting pincode from <code>address</code> feature &amp; merging rare categories into a single one for categorical features</li>
+</ul></li>
+<li>Missing values imputation
+<ul>
+<li>The imputation strategy for numerical features was <strong>median</strong> (due to outlier presence) while for <strong>most_frequent</strong> for categorical features.</li>
+<li>I did consider using KNNImputer, but since the dataset size is huge (~400k rows), it was time-consuming. Hence, I proceeded with the before-mentioned strategies.</li>
+</ul></li>
+<li>Outlier capping
+<ul>
+<li>I used Winsorization (percentile-capping) to cap the outliers. Since, all the numerical features were right-skewed, I capped their upper-end with 98th percentile value.</li>
+<li>I also considered IQR method for outlier-capping, but for some features such as <code>pub_rec_bankruptcies</code> the upper-bound turned out to be 0 (most records were 0). Hence, moved ahead with the before-mentioned strategy.</li>
+</ul></li>
+<li>Feature engineering
+<ul>
+<li>I created the following new features:
+<ul>
+<li><strong>emi_ratio</strong> = installment / monthly_income</li>
+<li><strong>credit_age_years</strong> = issue_d - earliest_cr_line</li>
+<li><strong>closed_acc</strong> = total_acc - open_acc</li>
+<li><strong>negative_rec</strong> = pub_rec | pub_rec_bankruptcies</li>
+<li><strong>credit_util_ratio</strong> = revol_bal / annual_inc</li>
+<li><strong>mortgage_ratio</strong> = mort_acc / total_acc</li>
+</ul></li>
+</ul></li>
+<li>Categorical feature encoding Features for One-hot &amp; Supervised encoding depended on the experiments.
+<ul>
+<li>Ordinal encoding for features: <code>grade, sub_grade, emp_length, term</code></li>
+<li>One-hot encoding</li>
+<li>Supervised encoding: I ran experiments with 2 types i.e.&nbsp;Weight-of-evidence(<a href="https://feature-engine.trainindata.com/en/1.8.x/user_guide/encoding/WoEEncoder.html">WOE</a>) &amp; Target encoding. WOE encoding usually works well with Logistic-regression, but as per my experiment Target encoding performed better.</li>
+</ul></li>
+<li>Feature Scaling
+<ul>
+<li>I used <strong>RobustScaler</strong> to bring the features in the same scale. This choice was made considering the presence of outliers which affects <strong>StandardScaler &amp; MinMaxScaler</strong>. RobustScaler considers median &amp; IQR for scaling, which are much resilient statistics towards outliers as opposed to mean &amp; standard-deviation (used in StandardScaler)</li>
+</ul></li>
+<li>Dropping irrelevant features
+<ul>
+<li>I dropped the following features:
+<ul>
+<li>title &amp; emp_title: Due to their high-cardinality, their cleaning, information-extraction and encoding was difficult</li>
+<li>issue_d &amp; earliest_cr_line: They were combined into a new feature i.e.&nbsp;credit_age_years and dropped later</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>I created a scikit-learn <code>Pipeline</code> with the above mentioned steps using Custom-Transformers, to make experimentation easier &amp; quicker. Find the code for the preprocessor <a href="https://github.com/dataexplorerRahul/LoanTap/tree/main/src/backend/data_preprocessing">here</a></p>
+</section>
+<section id="data-modeling" class="level2">
+<h2 class="anchored" data-anchor-id="data-modeling">5. Data Modeling</h2>
+<p>I trained the following ML models: Logistic Regression, Random-Forest, Xgboost &amp; LightGBM. These models were trained using Cross-validation (StratifiedKFold), to make the results reliable and agnostic to the validation-split.</p>
+<p>The experiments were tracked using MLFlow. Each experiment logged details such as parameter and metric values for training &amp; validation sets. These experiments can be accessed <a href="https://github.com/dataexplorerRahul/LoanTap/tree/main/mlflow_tracking">here</a></p>
+<p>These experiments were conducted for each model/algorithm across different aspects:</p>
+<ul>
+<li>Handling missing values: I tried with dropping missing values, imputing and leaving them in (specifically for tree-based models)</li>
+<li>Encoding strategies: I tried with only Onehot encoding, Onehot + Target encoding and only Target encoding of categorical features</li>
+<li>Outlier handling: I tried with capping outliers and leaving them in. Handling outliers</li>
+<li>Class imbalance handling: I tried with oversampling using SMOTE and class_weights parameter of models. Using class_weights parameter provided better results.</li>
+<li>Specific experiments:
+<ul>
+<li>Logistic regression assumes there is no multi-collinearity between the independent features, which I verified by calculating VIF (Variance Inflation Factor) values for each feature. I compared keeping vs.&nbsp;dropping features with high VIF values and the results of leaving all the features in was better, indicating that dropping those features (with VIF &gt; 5) lead to information loss affecting the predictive ability of the model.</li>
+</ul></li>
+</ul>
+<p>These were the results of different models:</p>
 <table class="table-striped table-hover table-bordered table">
-<caption>Embedding-model &amp; Search-type choice Performance</caption>
+<caption>Training-set evaluation (without hyperparameter-tuning &amp; optimization)</caption>
 <colgroup>
-<col style="width: 30%">
-<col style="width: 34%">
-<col style="width: 34%">
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Embedding model</th>
-<th style="text-align: center;">Semantic Search</th>
-<th style="text-align: center;">Hybrid Search</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Precision</th>
+<th style="text-align: center;">Recall</th>
+<th style="text-align: center;">F1-score</th>
+<th style="text-align: center;">PR-AUC (Average Precision)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">multilingual-e5-large-instruct</td>
-<td style="text-align: center;">Recall@3: 81.67% &nbsp;Recall@5: 90% &nbsp;Recall@7: 96%</td>
-<td style="text-align: center;">Recall@3: 82.33% &nbsp;Recall@5: 95% &nbsp;Recall@7: 97%</td>
+<td style="text-align: center;">Logistic regression</td>
+<td style="text-align: center;">0.522 ± 0.003</td>
+<td style="text-align: center;">0.791 ± 0.004</td>
+<td style="text-align: center;">0.629 ± 0.003</td>
+<td style="text-align: center;">0.783 ± 0.002</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">gemini-embedding-001</td>
-<td style="text-align: center;">Recall@3: 77.33% &nbsp;Recall@5: 88.67% &nbsp;Recall@7: 95.33%</td>
-<td style="text-align: center;">Recall@3: 84% &nbsp;Recall@5: 93% &nbsp;Recall@7: 97.67%</td>
+<td style="text-align: center;">Random forest</td>
+<td style="text-align: center;">0.489 ± 0.002</td>
+<td style="text-align: center;">0.822 ± 0.004</td>
+<td style="text-align: center;">0.613 ± 0.001</td>
+<td style="text-align: center;">0.781 ± 0.003</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">qwen3-embedding-4B</td>
-<td style="text-align: center;">Recall@3: 79% &nbsp;Recall@5: 88% &nbsp;Recall@7: 94.67%</td>
-<td style="text-align: center;">Recall@3: 83.33% &nbsp;Recall@5: 93% &nbsp;Recall@7: 96.33%</td>
+<td style="text-align: center;">Xgboost</td>
+<td style="text-align: center;">0.506 ± 0.002</td>
+<td style="text-align: center;">0.814 ± 0.003</td>
+<td style="text-align: center;">0.624 ± 0.002</td>
+<td style="text-align: center;">0.787 ± 0.002</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">qwen3-embedding-8B</td>
-<td style="text-align: center;">Recall@3: 83.67% &nbsp;Recall@5: 93.67% &nbsp;Recall@7: 96.33%</td>
-<td style="text-align: center;">Recall@3: 84.67% &nbsp;Recall@5: 93.33% &nbsp;Recall@7: 97.33%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">voyage-3-large</td>
-<td style="text-align: center;">Recall@3: 85% &nbsp;Recall@5: 95.33% &nbsp;Recall@7: 98.33%</td>
-<td style="text-align: center;">Recall@3: 86.67% &nbsp;Recall@5: 93.67% &nbsp;Recall@7: 97.33%</td>
+<td style="text-align: center;">LightGBM</td>
+<td style="text-align: center;">0.503 ± 0.001</td>
+<td style="text-align: center;">0.815 ± 0.003</td>
+<td style="text-align: center;">0.622 ± 0.002</td>
+<td style="text-align: center;">0.786 ± 0.003</td>
 </tr>
 </tbody>
 </table>
+<p>Considering Occam’s razor, <strong>Logistic regression</strong> is one of the best models including <strong>Xgboost</strong> if we had to select top-2. Next, I performed hyperparameter-tuning &amp; optimization for these models.</p>
+<p>I used scikit-learn’s <code>GridSearchCV</code> for Logistic-regression &amp; <code>RandomizedSearchCV</code> for Xgboost to find the optimal set of hyper-parameters. As part of optimization, I searched for the optimal threshold value that outputs the best metrics for Logistic-regression, Xgboost &amp; Ensemble model (equal combination of the individual models). After threshold optimization, Ensemble model fared better than the individual models with <strong>F1-score = 67% and PR-AUC = 79%</strong>.</p>
+</section>
+<section id="model-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation">6. Model Evaluation</h2>
+<p>Now, it was time to evaluate the models on test-set held out at the beginning of the project. The results were as below:</p>
 <table class="table-striped table-hover table-bordered table">
-<caption>Reranking Performance</caption>
+<caption>Test-set evaluation</caption>
 <colgroup>
-<col style="width: 30%">
-<col style="width: 34%">
-<col style="width: 34%">
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Embedding model</th>
-<th style="text-align: center;">Without Re-ranking</th>
-<th style="text-align: center;">With Re-ranking</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Precision</th>
+<th style="text-align: center;">Recall</th>
+<th style="text-align: center;">F1-score</th>
+<th style="text-align: center;">PR-AUC (Average Precision)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">voyage-3-large</td>
-<td style="text-align: center;">Recall@3: 85% &nbsp;Recall@5: 95.33% &nbsp;Recall@7: 98.33%</td>
-<td style="text-align: center;">Recall@3: 79.33% &nbsp;Recall@5: 88.67% &nbsp;Recall@7: 95.67%</td>
+<td style="text-align: center;">Logistic regression</td>
+<td style="text-align: center;">0.707</td>
+<td style="text-align: center;">0.613</td>
+<td style="text-align: center;">0.657</td>
+<td style="text-align: center;">0.778</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Xgboost</td>
+<td style="text-align: center;">0.688</td>
+<td style="text-align: center;">0.634</td>
+<td style="text-align: center;">0.66</td>
+<td style="text-align: center;">0.78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Ensemble (Logreg + Xgboost)</td>
+<td style="text-align: center;">0.664</td>
+<td style="text-align: center;">0.663</td>
+<td style="text-align: center;">0.663</td>
+<td style="text-align: center;">0.784</td>
 </tr>
 </tbody>
 </table>
+<p>Based on the above results and our success metrics i.e.&nbsp;F1-score &amp; PR-AUC, I chose Ensemble model for inferencing. There is one downside though with this model that its a combination of 2 models, hence requires separate data-prerpocessing &amp; inferencing for both which might lead to comparatively higher latency than the individual models.</p>
 </section>
-<section id="retrieval" class="level5">
-<h5 class="anchored" data-anchor-id="retrieval">Retrieval</h5>
-<p>Based on the results of above experiments, I made the following choices for the RAG retrieval pipeline:</p>
+<section id="model-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="model-deployment">7. Model deployment</h2>
+<p>For deployment, I made use of Docker-compose to run 2 docker containers: Frontend (Streamlit) &amp; Backend (FastAPI), communicating over docker-network (bridge). The compose.yaml &amp; dockerfiles for both Frontend &amp; Backend can be found in the <a href="https://github.com/dataexplorerRahul/LoanTap">repo</a>. This can be later be easily deployed to AWS ECS Fargate.</p>
+<p>The reasons for the before-mentioned deployment choices were:</p>
 <ul>
-<li>Retrieving only top-5 relevant chunks: This is the sweet-spot between top-3 &amp; top-7 with a balance of observed performance &amp; quantity of relevant information injected into the LLM context.</li>
-<li>Voyage-3-large as the embedding model: From the evaluation performances, Voyage-3-large provided the best metric for top-5 retrieved chunks.</li>
-<li>Semantic search in vector-database: Again from the evaluation performances, semantic search with Voyage-3-large embedding model was better than Hybrid search.</li>
-<li>No reranking after retrieval: Re-ranking post-retrieval saw a dip in Recall@5 metric performance.</li>
+<li>Streamlit: It is a Python-framework extensively used to create interactive web-applications with ease</li>
+<li>FastAPI: It is a excellent choice as a backend-server due to its capability to handle large number of asynchronous requests. It also automatically provides docs for the all the endpoints for faster debugging.</li>
 </ul>
 
 
-</section>
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->
