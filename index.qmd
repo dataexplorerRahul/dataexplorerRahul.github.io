@@ -15,5 +15,5 @@ about:
           text: Contact Me
           href: https://mail.google.com/mail/?view=cm&fs=1&to=rahulmenon1758@gmail.com
 ---
-Machine Learning & Deep Learning Enthusiast | Love to Code
+Building end-to-end pipelines where the only thing deeper than the layers is the passion.
 
