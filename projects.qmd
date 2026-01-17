@@ -1,8 +1,6 @@
 ---
-title: "Projects"
 listing:
   contents: posts
-  sort: "date desc"
   type: default
   categories: true
 page-layout: full
